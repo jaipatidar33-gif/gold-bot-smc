@@ -467,14 +467,13 @@ def run():
 
     sl_pips = abs(entry - sl) * 10
     rr = abs(tp1 - entry) / abs(entry - sl)
+
 if action == "LONG":
-    emoji = "🟢"
     direction = "BUY GOLD"
 else:
-    emoji = "🔴"
     direction = "SELL GOLD"
 
-text = emoji + " " + direction
+text = direction
 text = text + "\n\nEntry: " + str(round(entry, 2))
 text = text + "\nSL: " + str(round(sl, 2))
 text = text + "\nTP1: " + str(round(tp1, 2))
@@ -483,10 +482,9 @@ text = text + "\nTP3: " + str(round(tp3, 2))
 text = text + "\n\nConf: " + str(conf) + "/35"
 
 if pre:
-    text = text + "\n\n⚠️ PRE-NEWS: " + pre
+    text = text + "\n\nPRE-NEWS: " + pre
     text = text + "\nCLOSE TRADES NOW"
 
 if news_days:
-    text = text + "\n\n📰 NEWS DAY: " + ", ".join(news_days)
-
+    text = text + "\n\nNEWS DAY: " + ", ".join(news_days)
     
