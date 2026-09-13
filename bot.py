@@ -467,39 +467,26 @@ def run():
 
     sl_pips = abs(entry - sl) * 10
     rr = abs(tp1 - entry) / abs(entry - sl)
+if action == "LONG":
+    emoji = "🟢"
+    direction = "BUY GOLD"
+else:
+    emoji = "🔴"
+    direction = "SELL GOLD"
 
-    now = datetime.now(timezone.utc).strftime("%H:%M UTC")
-    text = "GOLD SMC " + action + " - " + session
+text = emoji + " " + direction
+text = text + "\n\nEntry: " + str(round(entry, 2))
+text = text + "\nSL: " + str(round(sl, 2))
+text = text + "\nTP1: " + str(round(tp1, 2))
+text = text + "\nTP2: " + str(round(tp2, 2))
+text = text + "\nTP3: " + str(round(tp3, 2))
+text = text + "\n\nConf: " + str(conf) + "/35"
 
-    if pre:
-        text = text + "\n\nPRE-NEWS ALERT: " + pre
-        text = text + "\nCLOSE TRADES NOW - Avoid new entries"
+if pre:
+    text = text + "\n\n⚠️ PRE-NEWS: " + pre
+    text = text + "\nCLOSE TRADES NOW"
 
-    if news_days:
-        text = text + "\n\nNEWS DAY: " + ", ".join(news_days)
-        text = text + "\nTrade with caution - use small size"
+if news_days:
+    text = text + "\n\n📰 NEWS DAY: " + ", ".join(news_days)
 
-    text = text + "\n\nTime: " + now
-    text = text + "\nPrice: " + str(round(cur, 2))
-    text = text + "\nEntry: " + str(round(entry, 2))
-    text = text + "\nSL: " + str(round(sl, 2)) + " (" + str(round(sl_pips)) + " pips)"
-    text = text + "\nTP1: " + str(round(tp1, 2))
-    text = text + "\nTP2: " + str(round(tp2, 2))
-    text = text + "\nTP3: " + str(round(tp3, 2))
-    text = text + "\nRR: 1:1 / 1:1.5 / 1:2"
-    text = text + "\nConf: " + str(conf) + "/35"
-    text = text + "\n\nSession Levels:"
-    text = text + "\nAsian: " + str(round(aL, 2)) + " -> " + str(round(aH, 2))
-    if lH:
-        text = text + "\nLondon: " + str(round(lL, 2)) + " -> " + str(round(lH, 2))
-    if nH:
-        text = text + "\nNY: " + str(round(nL, 2)) + " -> " + str(round(nH, 2))
-    text = text + "\nPDH: " + str(round(pdh, 2)) + " | PDL: " + str(round(pdl, 2))
-    text = text + "\n\nReasons:\n" + "\n".join(reasons[:15])
-
-    requests.post("https://api.telegram.org/bot" + TG + "/sendMessage",
-                  data={"chat_id": CI, "text": text}, timeout=30)
-    print("Sent: " + action + " Conf " + str(conf))
-
-if __name__ == "__main__":
-    run()
+    
