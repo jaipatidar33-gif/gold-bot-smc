@@ -31,20 +31,33 @@ def is_news_time():
         return "CPI"
     return None
 
+def is_pre_news():
+    now = datetime.now(timezone.utc)
+    h = now.hour
+    m = now.minute
+    dow = now.weekday()
+    if dow == 4 and h == 12 and 10 <= m <= 24:
+        return "NFP in " + str(25 - m) + " min"
+    if dow in [0, 1, 2, 3, 4] and h == 18 and 40 <= m <= 54:
+        return "FED in " + str(55 - m) + " min"
+    if dow in [0, 1, 2, 3, 4] and h == 12 and 10 <= m <= 24:
+        return "CPI in " + str(25 - m) + " min"
+    return None
+
 def get_news_day():
     now = datetime.now(timezone.utc)
     dow = now.weekday()
     d = now.day
-    warnings = []
+    w = []
     if dow == 4 and 1 <= d <= 7:
-        warnings.append("NFP Friday")
+        w.append("NFP Friday")
     if dow == 2 and 10 <= d <= 14:
-        warnings.append("CPI Day")
+        w.append("CPI Day")
     if dow == 3 and 15 <= d <= 21:
-        warnings.append("FOMC Possible")
+        w.append("FOMC Possible")
     if dow == 4:
-        warnings.append("Friday (Weekend close)")
-    return warnings
+        w.append("Friday Weekend Close")
+    return w
 
 def fetch(i, s):
     u = "https://api.twelvedata.com/time_series"
@@ -166,6 +179,7 @@ def run():
         print("News time: " + news + " - skip")
         return
 
+    pre = is_pre_news()
     session = get_session()
     news_days = get_news_day()
 
@@ -457,8 +471,12 @@ def run():
     now = datetime.now(timezone.utc).strftime("%H:%M UTC")
     text = "GOLD SMC " + action + " - " + session
 
+    if pre:
+        text = text + "\n\nPRE-NEWS ALERT: " + pre
+        text = text + "\nCLOSE TRADES NOW - Avoid new entries"
+
     if news_days:
-        text = text + "\n\n⚠️ NEWS DAY: " + ", ".join(news_days)
+        text = text + "\n\nNEWS DAY: " + ", ".join(news_days)
         text = text + "\nTrade with caution - use small size"
 
     text = text + "\n\nTime: " + now
@@ -469,7 +487,7 @@ def run():
     text = text + "\nTP2: " + str(round(tp2, 2))
     text = text + "\nTP3: " + str(round(tp3, 2))
     text = text + "\nRR: 1:1 / 1:1.5 / 1:2"
-    text = text + "\nConf: " + str(conf) + "/30"
+    text = text + "\nConf: " + str(conf) + "/35"
     text = text + "\n\nSession Levels:"
     text = text + "\nAsian: " + str(round(aL, 2)) + " -> " + str(round(aH, 2))
     if lH:
