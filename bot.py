@@ -1,11 +1,10 @@
-import requests, time
+import requests, time, os
 import pandas as pd
 from datetime import datetime, timezone
 
-TG = "8854505310:AAHA91tLQUvEPiiTOxW1S_x1kfIA8Cmwsyk"
-CI = "5885172416"
-DK = "3140708eff5b411786b7b5e6c95c11d1"
-
+TG = os.environ.get("TG_TOKEN")
+CI = os.environ.get("TG_CHAT")
+DK = os.environ.get("TD_KEY")
 def get_session():
     h = datetime.now(timezone.utc).hour
     if h >= 22 or h < 4:
